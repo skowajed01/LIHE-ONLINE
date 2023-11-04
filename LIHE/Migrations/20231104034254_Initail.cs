@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace LIHE.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class Initail : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -48,6 +48,27 @@ namespace LIHE.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "tbl_countrymast",
+                columns: table => new
+                {
+                    transid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    countryname = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    currency = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    nationalityname = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    callingcode = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    rco = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    rcm = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    luo = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    lum = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    sts = table.Column<int>(type: "int", nullable: false),
+                    delstatus = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tbl_countrymast", x => x.transid);
                 });
 
             migrationBuilder.CreateTable(
@@ -213,6 +234,9 @@ namespace LIHE.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "tbl_countrymast");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

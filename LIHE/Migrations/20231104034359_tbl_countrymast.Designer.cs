@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LIHE.Migrations
 {
     [DbContext(typeof(LIHEDBContext))]
-    [Migration("20231102045403_tbl_countrymast")]
+    [Migration("20231104034359_tbl_countrymast")]
     partial class tbl_countrymast
     {
         /// <inheritdoc />
@@ -32,15 +32,12 @@ namespace LIHE.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("callingcode")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("countryname")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("currency")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("delstatus")
@@ -50,18 +47,15 @@ namespace LIHE.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("luo")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("nationalityname")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("rcm")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("rco")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("sts")

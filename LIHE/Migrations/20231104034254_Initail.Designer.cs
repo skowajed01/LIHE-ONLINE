@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LIHE.Migrations
 {
     [DbContext(typeof(LIHEDBContext))]
-    [Migration("20231102041230_Initial")]
-    partial class Initial
+    [Migration("20231104034254_Initail")]
+    partial class Initail
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,47 @@ namespace LIHE.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("LIHE.Models.country", b =>
+                {
+                    b.Property<Guid>("transid")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("callingcode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("countryname")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("currency")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("delstatus")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("lum")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("luo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("nationalityname")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("rcm")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("rco")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("sts")
+                        .HasColumnType("int");
+
+                    b.HasKey("transid");
+
+                    b.ToTable("tbl_countrymast");
+                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {

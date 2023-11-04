@@ -17,7 +17,7 @@ namespace LIHE.Controllers
         }
         [HttpPost]
         [Route("PostCountrymast")]
-        public async Task<IActionResult> PostCountrymast( country cnt)
+        public async Task<IActionResult> PostCountrymast(country cnt)
         {
             var countrylist = new country()
             {
