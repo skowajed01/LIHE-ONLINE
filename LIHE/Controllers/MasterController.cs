@@ -1,113 +1,155 @@
 ﻿using LIHE.Data;
-using LIHE.Migrations;
 using Microsoft.AspNetCore.Mvc;
-using LIHE.Models;
 using Microsoft.EntityFrameworkCore;
+using LIHE.Models.Domain;
+using LIHE.Models;
+using System.Net;
+
+using LIHE.Models.DTO;
+using AutoMapper;
+using LIHE.Repositories.IRepositoty;
+
 
 namespace LIHE.Controllers
 {
-    [ApiController]
-    [Route("/api/[controller]")]
-    public class MasterController : Controller
-    {
-        private readonly LIHEDBContext _dbcontext;
-        public MasterController(LIHEDBContext dbcontext)
-        {
-            _dbcontext = dbcontext;
-        }
-        [HttpPost]
-        [Route("PostCountrymast")]
-        public async Task<IActionResult> PostCountrymast(country cnt)
-        {
-            var countrylist = new country()
-            {
-                transid = Guid.NewGuid(),
-                countryname = cnt.countryname,
-                currency = cnt.currency,
-                nationalityname = cnt.nationalityname,
-                callingcode = cnt.callingcode,
-                rco = "",
-                rcm = DateTime.Now,
-                luo = "",
-                lum = null,
-                sts = 0,
-                delstatus = 0
-            };
-            var result = await _dbcontext.AddAsync(countrylist);
-            // var result = await _dbContext.tblnew.AddAsync(aPICoreM);
-            await _dbcontext.SaveChangesAsync();
-            if (result != null)
-            {
-                return Ok("Successfull");
-            }
-            return BadRequest();
-        }
+	[ApiController]
+	[Route("/api/[controller]")]
+	public class MasterController : Controller
+	{
 
-        [HttpGet]
-        [Route("GetDetails")]
-        public async Task<IActionResult> GetCountrymast() 
-        {
-            var countrylist = await _dbcontext.tbl_countrymast.Where(m=>m.delstatus == 0).OrderByDescending(m=>m.countryname).ToListAsync();
-            return Ok(countrylist);
-        }
+		protected APIResponse _response;
 
-        [HttpGet]
-        [Route("GetCountrymast")]
-        public async Task<IActionResult> GetCountrymast(Guid Id)
-        {
-            country model = new country();
+		private readonly IMapper mapper;
+		private readonly ICountryMastRepository countryMastRepository;
 
-            var tbl_countrymast = _dbcontext.tbl_countrymast.Where(m => m.transid == Id).FirstOrDefault();
+		public MasterController(IMapper mapper, ICountryMastRepository countryMastRepository)
+		{
 
-            if (tbl_countrymast != null)
-            {
-                model.transid = tbl_countrymast.transid;
-                model.countryname = tbl_countrymast.countryname;
-                model.currency = tbl_countrymast.currency;
-                model.nationalityname = tbl_countrymast.nationalityname;
-                model.callingcode = tbl_countrymast.callingcode;
-            }
+			_response = new();
 
-            return Ok(model);
-        }
+			this.mapper = mapper;
+			this.countryMastRepository = countryMastRepository;
+		}
+		[HttpPost]
+		[Route("Countrymast")]
+		public async Task<IActionResult> Countrymast([FromBody] AddCountryRequestDto cnt)
+		{
+			if (ModelState.IsValid)
+			{
+				Country country = new Country()
+				{
+					transid = Guid.NewGuid(),
+					countryname = cnt.countryname,
+					currency = cnt.currency,
+					nationalityname = cnt.nationalityname,
+					callingcode = cnt.callingcode,
+					rco = "",
+					rcm = DateTime.Now,
+					luo = "",
+					lum = null,
+					sts = 0,
+					delstatus = 0
+				};
 
-        [HttpPost]
-        [Route("PostCountrymastUpdate")]
-        public async Task<IActionResult> PostCountrymastUpdate(country model)
-        {
-            var tbl = _dbcontext.tbl_countrymast.Where(m => m.transid == model.transid).FirstOrDefault();
-           
-            if (tbl != null)
-            {
-                tbl.countryname = model.countryname;
-                tbl.currency = model.currency;
-                tbl.nationalityname = model.nationalityname;
-                tbl.callingcode = model.callingcode;
-                tbl.luo = "";
-                tbl.lum = DateTime.Now;
-                _dbcontext.tbl_countrymast.Update(tbl);
-                _dbcontext.SaveChanges();
-            }
+				//var result = await _dbcontext.tbl_countrymast.AddAsync(country);
 
-            return Ok(tbl);
-        }
+				//// var result = await _dbContext.tblnew.AddAsync(aPICoreM);
+				//await _dbcontext.SaveChangesAsync();
+				var result = await countryMastRepository.CreateAsync(country);
 
-        [HttpGet]
-        [Route("DeleteCountrymast")]
-        public async Task<IActionResult> DeleteCountrymast(Guid Id)
-        {
+				if (result != null)
+				{
+					_response.StatusCode = HttpStatusCode.OK;
+					_response.IsSuccess = true;
+					_response.Result = mapper.Map<AddCountryResponseDto>(result);
 
-            var tbl = _dbcontext.tbl_countrymast.Where(m => m.transid == Id).FirstOrDefault();
+					return Ok(_response);
+				}
+				_response.StatusCode = HttpStatusCode.BadRequest;
+				_response.IsSuccess = false;
+				_response.Result = _response;
+				return BadRequest(result);
+			}
+			_response.StatusCode = HttpStatusCode.BadRequest;
+			_response.IsSuccess = false;
+			_response.Result = "Validation Error";
+			return BadRequest(_response);
+		}
 
-            if (tbl != null)
-            {
-                tbl.delstatus = 1;
-                _dbcontext.tbl_countrymast.Update(tbl);
-                _dbcontext.SaveChanges();
-            }
+		[HttpGet]
+		[Route("GetCountryDetails")]
+		public async Task<IActionResult> GetCountrymast()
+		{
+			var countrylist = await countryMastRepository.GetAllAsync();
 
-            return Ok(tbl);
-        }
+			if (countrylist != null)
+			{
+				_response.StatusCode = HttpStatusCode.OK;
+				_response.IsSuccess = true;
+				_response.Result = mapper.Map<List<AddCountryResponseDto>>(countrylist);
 
-    }
+				return Ok(_response);
+			}
+
+			return NoContent();
+		}
+		[HttpPost]
+		[Route("UpdateCountrymast/{id}")]
+		public async Task<IActionResult> UpdateCounty([FromRoute] Guid id, [FromBody] UpdateCountryRequestDto cnt)
+		{
+			var countryDomainModel = mapper.Map<Country>(cnt);
+			var existingCountry = await countryMastRepository.UpdateAsync(id, countryDomainModel);
+
+			if (existingCountry == null)
+			{
+				_response.StatusCode = HttpStatusCode.BadRequest;
+				_response.IsSuccess = true;
+				_response.Result = "Wrong Details";
+				return BadRequest(_response);
+			}
+			_response.StatusCode = HttpStatusCode.OK;
+			_response.IsSuccess = true;
+			_response.Result = mapper.Map<AddCountryResponseDto>(existingCountry);
+			return Ok(_response);
+		}
+		[HttpGet]
+		[Route("GetCountry/{id}")]
+		public async Task<IActionResult> GetCountryById([FromRoute] Guid id)
+		{
+			var country = await countryMastRepository.GetByIdAsync(id);
+			if (country == null)
+			{
+				_response.StatusCode = HttpStatusCode.NotFound;
+				_response.IsSuccess = false;
+				_response.Result = "Wrong Details";
+				return NotFound(_response);
+			}
+			_response.StatusCode = HttpStatusCode.OK;
+			_response.IsSuccess = true;
+			_response.Result = mapper.Map<AddCountryResponseDto>(country);
+			return Ok(_response);
+		}
+
+
+
+		[HttpDelete]
+		[Route("DeleteCountrymast/{id}")]
+		public async Task<IActionResult> DeleteCountrymast([FromRoute] Guid id)
+		{
+			var country = await countryMastRepository.DeleteAsync(id);
+			if (country != null)
+			{
+
+				_response.StatusCode = HttpStatusCode.OK;
+				_response.IsSuccess = true;
+				_response.Result = mapper.Map<AddCountryResponseDto>(country)!;
+				return Ok(_response);
+			}
+			_response.StatusCode = HttpStatusCode.NotFound;
+			_response.IsSuccess = false;
+			_response.Result = "No Data Found";
+			return NotFound(_response);
+		}
+
+	}
 }
