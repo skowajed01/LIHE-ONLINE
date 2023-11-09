@@ -4,6 +4,7 @@ using LIHE.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LIHE.Migrations
 {
     [DbContext(typeof(LIHEDbContext))]
-    partial class LIHEDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231107094358_init1")]
+    partial class init1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -47,16 +50,18 @@ namespace LIHE.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("luo")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("nationalityname")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("rcm")
+                    b.Property<DateTime>("rcm")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("rco")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("sts")

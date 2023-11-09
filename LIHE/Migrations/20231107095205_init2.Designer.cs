@@ -11,9 +11,9 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace LIHE.Migrations
 {
-    [DbContext(typeof(LIHEDBContext))]
-    [Migration("20231102041230_Initial")]
-    partial class Initial
+    [DbContext(typeof(LIHEDbContext))]
+    [Migration("20231107095205_init2")]
+    partial class init2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,51 @@ namespace LIHE.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("LIHE.Models.Domain.Country", b =>
+                {
+                    b.Property<Guid>("transid")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("callingcode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("countryname")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("currency")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("delstatus")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("lum")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("luo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("nationalityname")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("rcm")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("rco")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("sts")
+                        .HasColumnType("int");
+
+                    b.HasKey("transid");
+
+                    b.ToTable("tbl_countrymast", "academic");
+                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {

@@ -11,9 +11,9 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace LIHE.Migrations
 {
-    [DbContext(typeof(LIHEDBContext))]
-    [Migration("20231102045403_tbl_countrymast")]
-    partial class tbl_countrymast
+    [DbContext(typeof(LIHEDbContext))]
+    [Migration("20231107094012_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,22 +25,19 @@ namespace LIHE.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("LIHE.Models.country", b =>
+            modelBuilder.Entity("LIHE.Models.Domain.Country", b =>
                 {
                     b.Property<Guid>("transid")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("callingcode")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("countryname")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("currency")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("delstatus")
@@ -50,18 +47,15 @@ namespace LIHE.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("luo")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("nationalityname")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("rcm")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("rco")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("sts")
@@ -69,7 +63,7 @@ namespace LIHE.Migrations
 
                     b.HasKey("transid");
 
-                    b.ToTable("tbl_countrymast");
+                    b.ToTable("tbl_countrymast", "academic");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
