@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using LIHE.Models.Domain;
 using LIHE.Models;
 using System.Net;
-using Azure;
+
 using LIHE.Models.DTO;
 using AutoMapper;
 using LIHE.Repositories.IRepositoty;
-using LIHE.Repositories;
+
 
 namespace LIHE.Controllers
 {
@@ -97,8 +97,6 @@ namespace LIHE.Controllers
 		[Route("UpdateCountrymast/{id}")]
 		public async Task<IActionResult> UpdateCounty([FromRoute] Guid id, [FromBody] UpdateCountryRequestDto cnt)
 		{
-
-
 			var countryDomainModel = mapper.Map<Country>(cnt);
 			var existingCountry = await countryMastRepository.UpdateAsync(id, countryDomainModel);
 
@@ -109,8 +107,6 @@ namespace LIHE.Controllers
 				_response.Result = "Wrong Details";
 				return BadRequest(_response);
 			}
-
-
 			_response.StatusCode = HttpStatusCode.OK;
 			_response.IsSuccess = true;
 			_response.Result = mapper.Map<AddCountryResponseDto>(existingCountry);
