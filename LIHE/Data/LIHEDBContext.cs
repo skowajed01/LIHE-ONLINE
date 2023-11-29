@@ -12,7 +12,9 @@ namespace LIHE.Data
 
 		}
 		public DbSet<Country> tbl_countrymast { get; set; }
-		protected override void OnModelCreating(ModelBuilder builder)
+		public DbSet<department> tbldeptmast {  get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
 		{
 			base.OnModelCreating(builder);
 		}
