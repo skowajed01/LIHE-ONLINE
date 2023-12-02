@@ -13,6 +13,7 @@ namespace LIHE.Data
 		}
 		public DbSet<Country> tbl_countrymast { get; set; }
 		public DbSet<department> tbldeptmast {  get; set; }
+		public DbSet<jobtypemast> tbljobtype {  get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
 		{

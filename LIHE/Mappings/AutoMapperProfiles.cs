@@ -11,6 +11,7 @@ namespace LIHE.Mappings
 			CreateMap<AddCountryRequestDto, AddCountryResponseDto>().ReverseMap();
 			CreateMap<Country, AddCountryResponseDto>().ReverseMap();
 			CreateMap<Country, UpdateCountryRequestDto>().ReverseMap();
+			CreateMap<department, DepartmentRequestDto>().ReverseMap();
 
 		}
 	}

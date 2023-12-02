@@ -21,16 +21,145 @@ namespace LIHE.Controllers
 
 		private readonly IMapper mapper;
 		private readonly ICountryMastRepository countryMastRepository;
+		private readonly IDepartmentmastRepository departmentmastRepository;
 
-		public MasterController(IMapper mapper, ICountryMastRepository countryMastRepository)
+		public MasterController(IMapper mapper, ICountryMastRepository countryMastRepository,IDepartmentmastRepository departmentmastRepository)
 		{
 
 			_response = new();
 
 			this.mapper = mapper;
 			this.countryMastRepository = countryMastRepository;
+			this.departmentmastRepository = departmentmastRepository;
 		}
-		[HttpPost]
+
+        [HttpPost]
+        [Route("Department")]
+        public async Task<IActionResult> Departmentmaster([FromBody] DepartmentRequestDto dept)
+        {
+            if (ModelState.IsValid)
+            {
+				department department = new department()
+				{
+					transid = Guid.NewGuid(),
+					deptname = dept.deptname,
+					deptsname = dept.deptsname,
+					jobtype = dept.jobtype,
+					rco = "",
+					rcm = DateTime.Now,
+					luo = "",
+					lum = null,
+					visblsts = "0",
+					delstatus = 0,
+					slno = 0,
+					serial_no = 0,
+					ImageLocation = "",
+					department_email = "",
+					dept_cname = "",
+					e_mail ="",
+                    orign_id = "",
+					webdeptname = "",
+					status = "",
+                };
+
+                var result = await departmentmastRepository.CreateAsync(department);
+
+                if (result != null)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = mapper.Map<DepartmentRequestDto>(result);
+
+                    return Ok(_response);
+                }
+                _response.StatusCode = HttpStatusCode.BadRequest;
+                _response.IsSuccess = false;
+                _response.Result = _response;
+                return BadRequest(result);
+            }
+            _response.StatusCode = HttpStatusCode.BadRequest;
+            _response.IsSuccess = false;
+            _response.Result = "Validation Error";
+            return BadRequest(_response);
+        }
+
+        [HttpGet]
+        [Route("GetDepartmentDetails")]
+        public async Task<IActionResult> GetDeptmast()
+        {
+            var deptlist = await departmentmastRepository.GetAllAsync();
+
+            if (deptlist != null)
+            {
+                _response.StatusCode = HttpStatusCode.OK;
+                _response.IsSuccess = true;
+                _response.Result = mapper.Map<List<DepartmentRequestDto>>(deptlist);
+
+                return Ok(_response);
+            }
+
+            return NoContent();
+        }
+
+        [HttpGet]
+        [Route("GetDepartment/{id}")]
+        public async Task<IActionResult> GetDepartmentById([FromRoute] Guid id)
+        {
+            var dept = await departmentmastRepository.GetByIdAsync(id);
+            if (dept == null)
+            {
+                _response.StatusCode = HttpStatusCode.NotFound;
+                _response.IsSuccess = false;
+                _response.Result = "Wrong Details";
+                return NotFound(_response);
+            }
+            _response.StatusCode = HttpStatusCode.OK;
+            _response.IsSuccess = true;
+            _response.Result = mapper.Map<DepartmentRequestDto>(dept);
+            return Ok(_response);
+        }
+
+        [HttpPost]
+        [Route("UpdateDepartmentmast/{id}")]
+        public async Task<IActionResult> UpdateDepartment([FromRoute] Guid id, [FromBody] DepartmentRequestDto dept)
+        {
+            var deptDomainModel = mapper.Map<department>(dept);
+            var existingDepartment = await departmentmastRepository.UpdateAsync(id, deptDomainModel);
+
+            if (existingDepartment == null)
+            {
+                _response.StatusCode = HttpStatusCode.BadRequest;
+                _response.IsSuccess = true;
+                _response.Result = "Wrong Details";
+                return BadRequest(_response);
+            }
+            _response.StatusCode = HttpStatusCode.OK;
+            _response.IsSuccess = true;
+            _response.Result = mapper.Map<DepartmentRequestDto>(existingDepartment);
+            return Ok(_response);
+        }
+
+        [HttpDelete]
+        [Route("DeleteDepartmentmast/{id}")]
+        public async Task<IActionResult> DeleteDepartmentmast([FromRoute] Guid id)
+        {
+            var dept = await departmentmastRepository.DeleteAsync(id);
+            if (dept != null)
+            {
+
+                _response.StatusCode = HttpStatusCode.OK;
+                _response.IsSuccess = true;
+                _response.Result = mapper.Map<DepartmentRequestDto>(dept)!;
+                return Ok(_response);
+            }
+            _response.StatusCode = HttpStatusCode.NotFound;
+            _response.IsSuccess = false;
+            _response.Result = "No Data Found";
+            return NotFound(_response);
+        }
+
+
+        [HttpPost]
 		[Route("Countrymast")]
 		public async Task<IActionResult> Countrymast([FromBody] AddCountryRequestDto cnt)
 		{

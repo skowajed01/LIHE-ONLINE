@@ -15,6 +15,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<ICountryMastRepository, CountryMastRepository>();
+builder.Services.AddScoped<IDepartmentmastRepository, DepartmentMastRepository>();
+
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 builder.Services.AddDbContext<LIHEDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("defalutConncetion"))
